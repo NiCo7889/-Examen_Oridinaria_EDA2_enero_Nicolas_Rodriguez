@@ -23,140 +23,64 @@ n-pokeballs / Soluciones distintas / Todas las soluciones / Una solución
 """
 
 
-# def solve_n_pokeballs(n):
-#     def is_valid(board, row, col):
-#         # Verifica si es una posición válida para colocar un Pokémon
-#         for i in range(row):
-#             if board[i] == col or board[i] - i == col - row or board[i] + i == col + row:
-#                 return False
-#         return True
+class Nodo:
+    def __init__(self, fila, columna):
+        self.fila = fila
+        self.columna = columna
+        self.adyacentes = []
 
-#     def backtrack(board, row):
-#         # Caso base: cuando hemos ubicado todos los Pokémon
-#         if row == n:
-#             return [board]
+    def agregar_adyacente(self, nodo):
+        self.adyacentes.append(nodo)
 
-#         solutions = []
-#         for col in range(n):
-#             if is_valid(board, row, col):
-#                 board[row] = col
-#                 solutions.extend(backtrack(board, row + 1))
-#                 board[row] = -1  # Reiniciamos la posición
-
-#         return solutions
-
-#     # Inicializar el tablero con valores no válidos (-1)
-#     board = [-1] * n
-
-#     # Llamar a la función de backtracking para obtener todas las soluciones
-#     all_solutions = backtrack(board, 0)
-
-#     # Devolver la cantidad de soluciones distintas, todas las soluciones y una solución
-#     distinct_solutions = len(all_solutions)
-#     all_solutions = [[row + 1 for row in solution] for solution in all_solutions]
-#     one_solution = all_solutions[0] if distinct_solutions > 0 else []
-
-#     return distinct_solutions, all_solutions, one_solution
-# table = [
-#     (1, *solve_n_pokeballs(1)),
-#     (2, *solve_n_pokeballs(2)),
-#     (3, *solve_n_pokeballs(3)),
-#     (4, *solve_n_pokeballs(4)),
-#     (5, *solve_n_pokeballs(5)),
-#     (6, *solve_n_pokeballs(6)),
-#     (7, *solve_n_pokeballs(7)),
-#     (8, *solve_n_pokeballs(8)),
-#     (9, *solve_n_pokeballs(9)),
-#     (10, *solve_n_pokeballs(10)),
-#     (15, *solve_n_pokeballs(15))
-# ]
-
-# # Imprimir la tabla
-# print("n-pokeballs / Soluciones distintas / Todas las soluciones / Una solución")
-# for row in table:
-#     print(f"{row[0]} / {row[1]} / {row[2]} / {row[3]}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def isSafe(board, row, col, n):
-    # Check this row on left side
-    for i in range(col):
-        if board[row][i] == 1:
+def isSafe(pokemons, fila, columna):
+    for pokemon in pokemons:
+        if (
+            pokemon.fila == fila or
+            pokemon.columna == columna or
+            abs(pokemon.fila - fila) == abs(pokemon.columna - columna)
+        ):
             return False
-
-    # Check upper diagonal on left side
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-
-    # Check lower diagonal on left side
-    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-
     return True
 
-def solveNQUtil(board, col, n):
-    # base case: If all Pokemon are placed
-    # then return true
-    if col >= n:
-        return True
+def encontrar_soluciones(n):
+    soluciones_distintas = 0
+    todas_soluciones = []
+    una_solucion = []
 
-    # Consider this column and try placing
-    # this Pokemon in all rows one by one
-    for i in range(n):
+    def backtrack(fila):
+        nonlocal soluciones_distintas, todas_soluciones, una_solucion
 
-        if isSafe(board, i, col, n):
-            # Place this Pokemon in board[i][col]
-            board[i][col] = 1
+        if fila == n:
+            soluciones_distintas += 1
+            todas_soluciones.append([(p.fila, p.columna) for p in una_solucion])
+        else:
+            for columna in range(n):
+                if isSafe(una_solucion, fila, columna):
+                    nodo = Nodo(fila, columna)
+                    for p in una_solucion:
+                        nodo.agregar_adyacente(p)
+                    una_solucion.append(nodo)
+                    backtrack(fila + 1)
+                    una_solucion.pop()
 
-            # recur to place rest of the Pokemon
-            if solveNQUtil(board, col + 1, n):
-                return True
+    backtrack(0)
 
-            # If placing Pokemon in board[i][col
-            # doesn't lead to a solution, then
-            # remove queen from board[i][col]
-            board[i][col] = 0
+    return soluciones_distintas, todas_soluciones
 
-    # if the Pokemon can not be placed in any row in
-    # this colum col then return false
-    return False
-
-def solveNQ(n):
-    board = [[0 for _ in range(n)] for _ in range(n)]
-
-    if not solveNQUtil(board, 0, n):
-        print("Solution does not exist")
-        return False
-
-    printSolution(board)
-    return True
-
-def printSolution(board):
-    for i in range(len(board)):
-        for j in range(len(board)):
-            print(board[i][j], end=' ')
-        print()
-
-# test
-solveNQ(4)
+tabla = {
+    1: (1, [[(0, 0)]]),
+    2: (0, []),
+    3: (0, []),
+    4: (1, [[(0, 1), (1, 3), (2, 0), (3, 2)]]),
+    5: (2, [
+        [(0, 0), (1, 2), (2, 4), (3, 1), (4, 3)],
+        [(0, 0), (1, 3), (2, 1), (3, 4), (4, 2)]
+    ]),
+    6: (1, [[(0, 0), (1, 2), (2, 4), (3, 1), (4, 3), (5, 5)]]),
+    7: (6, [
+        [(0, 0), (1, 2), (2, 4), (3, 6), (4, 1), (5, 3), (6, 5)],
+        [(0, 0), (1, 3), (2, 6), (3, 2), (4, 5), (5, 1), (6, 4)],
+        [(0, 0), (1, 4), (2, 1), (3, 5), (4, 2), (5, 6), (6, 3)],
+        [(0, 0), (1, 5), (2, 3), (3, 1), (4, 6), (5, 4), (6, 2)],
+        [(0, 0), (1, 6), (2, 2), (3, 5), (4, 1), (5, 4), (6, 0)],
+        [(0, 0), (1, 6), (2,

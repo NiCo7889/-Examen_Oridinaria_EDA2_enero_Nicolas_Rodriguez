@@ -39,31 +39,81 @@ Cantidad de movimientos -> Posibilidades válidas
 """
 
 
-grafo = {
-    1: [6, 8],
-    2: [7, 9],
-    3: [4, 8],
-    4: [3, 9, 0],
-    5: [],
-    6: [1, 7, 0],
-    7: [2, 6],
-    8: [1, 3],
-    9: [2, 4],
-    0: [4, 6],
-}
+import random
 
+class Nodo:
+    def __init__(self, simbolo, frecuencia, izq=None, der=None):
+        self.simbolo = simbolo
+        self.frecuencia = frecuencia
+        self.izq = izq
+        self.der = der
 
-def posibles_teletransportes(nodo_inicial, movimientos):
-    if movimientos == 0:
-        return 1
-    else:
-        return sum(posibles_teletransportes(nodo, movimientos - 1) for nodo in grafo[nodo_inicial])
+def construir_arbol_huffman(simbolos):
+    while len(simbolos) > 1:
+        simbolos = sorted(simbolos, key=lambda x: x.frecuencia)
+        izq = simbolos.pop(0)
+        der = simbolos.pop(0)
+        nodo = Nodo(None, izq.frecuencia + der.frecuencia, izq, der)
+        simbolos.append(nodo)
+    return simbolos[0]
 
-def total_posibles_teletransportes(movimientos):
-    return sum(posibles_teletransportes(nodo, movimientos) for nodo in grafo)
+def generar_codigos(nodo, prefijo='', codigo={}):
+    if nodo is None:
+        return
+    if nodo.simbolo is not None:
+        codigo[nodo.simbolo] = prefijo
+    generar_codigos(nodo.izq, prefijo + '0', codigo)
+    generar_codigos(nodo.der, prefijo + '1', codigo)
+    return codigo
+
+def codificar(mensaje, codigo):
+    return ''.join([codigo[c] for c in mensaje])
+
+def decodificar(mensaje_codificado, nodo):
+    mensaje = ''
+    n = len(mensaje_codificado)
+    i = 0
+    while i < n:
+        nodo_actual = nodo
+        while nodo_actual.simbolo is None:
+            if mensaje_codificado[i] == '0':
+                nodo_actual = nodo_actual.izq
+            else:
+                nodo_actual = nodo_actual.der
+            i += 1
+        mensaje += nodo_actual.simbolo
+    return mensaje
+
+def generar_frecuencias(simbolos):
+    frecuencias = {}
+    total = 0
+    for simbolo in simbolos:
+        frecuencia = random.uniform(0.01, 0.5)
+        frecuencias[simbolo] = frecuencia
+        total += frecuencia
+    for simbolo in frecuencias:
+        frecuencias[simbolo] /= total
+    return frecuencias
 
 
 if __name__ == "__main__":
 
-    for movimientos in [1, 2, 3, 5, 6, 7, 8, 9, 10, 15, 18, 21, 23, 32]:
-        print(f"{movimientos} -> {total_posibles_teletransportes(movimientos)}")
+    simbolos = ['T', 'O', 'A', 'E', 'H', 'S', 'P', 'M', 'N', 'C', 'D', 'Z', 'K', ',']
+    frecuencias = generar_frecuencias(simbolos)
+
+    nodos = []
+    for simbolo in frecuencias:
+        nodo = Nodo(simbolo, frecuencias[simbolo])
+        nodos.append(nodo)
+
+    arbol_huffman = construir_arbol_huffman(nodos)
+    codigos = generar_codigos(arbol_huffman)
+
+    mensaje = 'HAZTE,CON,TODOS,POKEMON'
+    mensaje_codificado = codificar(mensaje, codigos)
+    mensaje_decodificado = decodificar(mensaje_codificado, arbol_huffman)
+
+    print("Frecuencias:", frecuencias)
+    print("Mensaje original:", mensaje)
+    print("Mensaje codificado:", mensaje_codificado)
+    print("Mensaje decodificado:", mensaje_decodificado)

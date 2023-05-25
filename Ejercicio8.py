@@ -21,8 +21,8 @@ K	0.03
 ,	0.03
 
 Descubre el mensaje cifrado
-
 """
+
 
 
 # Primero, definimos la clase Nodo
@@ -101,10 +101,12 @@ codigos_huffman = generar_codigos(arbol_huffman)
 
 if __name__ == "__main__":
 
-    mensaje = "SEPASA"
+    mensaje = "SE,PASA"
     mensaje_codificado = codificar(mensaje, codigos_huffman)
     mensaje_decodificado = decodificar(mensaje_codificado, arbol_huffman)
+    mensaje_cifrado = "001101110110100110011010"
 
     print("Mensaje original: ", mensaje)
     print("Mensaje codificado: ", mensaje_codificado)
     print("Mensaje decodificado: ", mensaje_decodificado)
+    print("Mensaje cifrado: ", decodificar(mensaje_cifrado, arbol_huffman))

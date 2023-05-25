@@ -83,25 +83,26 @@ class Grafo:
         return camino_critico
 
 
+if __name__ == "__main__":
 
-tareas_nombres = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']
-tareas_duraciones = [20, 5, 40, 10, 5, 10, 20, 25, 35, 25, 15, 5, 25]
+    tareas_nombres = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']
+    tareas_duraciones = [20, 5, 40, 10, 5, 10, 20, 25, 35, 25, 15, 5, 25]
 
-grafo = Grafo()
+    grafo = Grafo()
 
-tareas = {nombre: Tarea(nombre, duracion) for nombre, duracion in zip(tareas_nombres, tareas_duraciones)}
+    tareas = {nombre: Tarea(nombre, duracion) for nombre, duracion in zip(tareas_nombres, tareas_duraciones)}
 
-for tarea in tareas.values():
-    grafo.añadir_tarea(tarea)
+    for tarea in tareas.values():
+        grafo.añadir_tarea(tarea)
 
-for i in range(len(tareas_nombres) - 1):
-    tareas[tareas_nombres[i]].añadir_tarea_siguiente(tareas[tareas_nombres[i+1]])
+    for i in range(len(tareas_nombres) - 1):
+        tareas[tareas_nombres[i]].añadir_tarea_siguiente(tareas[tareas_nombres[i+1]])
 
-grafo.forward_pass()
-grafo.backward_pass()
-camino_critico = grafo.encontrar_camino_critico()
+    grafo.forward_pass()
+    grafo.backward_pass()
+    camino_critico = grafo.encontrar_camino_critico()
 
-tiempo_total = sum(tarea.duracion for tarea in camino_critico)
+    tiempo_total = sum(tarea.duracion for tarea in camino_critico)
 
-print(f'Tiempo total necesario: {tiempo_total} minutos')
-print(f'Camino crítico: {", ".join(tarea.nombre for tarea in camino_critico)}')
+    print(f'Tiempo total necesario: {tiempo_total} minutos')
+    print(f'Camino crítico: {", ".join(tarea.nombre for tarea in camino_critico)}')

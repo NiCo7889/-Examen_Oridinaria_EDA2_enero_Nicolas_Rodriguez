@@ -33,3 +33,30 @@ Cantidad de movimientos -> Posibilidades válidas
 32 ->
 
 """
+
+
+grafo = {
+    1: [6, 8],
+    2: [7, 9],
+    3: [4, 8],
+    4: [3, 9, 0],
+    5: [],
+    6: [1, 7, 0],
+    7: [2, 6],
+    8: [1, 3],
+    9: [2, 4],
+    0: [4, 6],
+}
+
+
+def posibles_teletransportes(nodo_inicial, movimientos):
+    if movimientos == 0:
+        return 1
+    else:
+        return sum(posibles_teletransportes(nodo, movimientos - 1) for nodo in grafo[nodo_inicial])
+
+def total_posibles_teletransportes(movimientos):
+    return sum(posibles_teletransportes(nodo, movimientos) for nodo in grafo)
+
+for movimientos in [1, 2, 3, 5, 10, 15, 18, 21, 23, 32]:
+    print(f"{movimientos} -> {total_posibles_teletransportes(movimientos)}")

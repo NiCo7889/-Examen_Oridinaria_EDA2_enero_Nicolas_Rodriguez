@@ -34,3 +34,45 @@ L / Organizar los objetos. / 5'
 
 M / Viajar al aeropuerto y facturar. / 25'
 """
+
+
+tareas = {
+    'A': 20,
+    'B': 5,
+    'C': 40,
+    'D': 10,
+    'E': 5,
+    'F': 10,
+    'G': 20,
+    'H': 25,
+    'I': 35,
+    'J': 25,
+    'K': 15,
+    'L': 5,
+    'M': 25,
+}
+
+secuencias = [
+    ['A', 'D', 'E', 'F'],
+    ['B', 'C', 'G', 'H'],
+    ['I', 'J'],
+    ['K', 'L'],
+    ['M']
+]
+
+def tiempo_total(secuencia):
+    return sum(tareas[tarea] for tarea in secuencia)
+
+def tarea_mas_larga(secuencia):
+    return max(secuencia, key=lambda tarea: tareas[tarea])
+
+for secuencia in secuencias:
+    print(f"Secuencia {secuencia}:")
+    print(f"  Tiempo total: {tiempo_total(secuencia)} minutos")
+    print(f"  Tarea más larga: {tarea_mas_larga(secuencia)}")
+
+
+def tiempo_total_todas_las_tareas():
+    return sum(tareas.values())
+
+print(f"Tiempo total para todas las tareas: {tiempo_total_todas_las_tareas()} minutos")

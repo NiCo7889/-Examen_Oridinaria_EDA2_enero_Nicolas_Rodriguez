@@ -98,11 +98,13 @@ nodos = [Nodo(s, f) for s, f in frecuencias.items()]
 arbol_huffman = construir_arbol_huffman(nodos)
 codigos_huffman = generar_codigos(arbol_huffman)
 
-mensaje = "SEPASA"
-mensaje_codificado = codificar(mensaje, codigos_huffman)
-mensaje_decodificado = decodificar(mensaje_codificado, arbol_huffman)
 
-print("Mensaje original: ", mensaje)
-print("Mensaje codificado: ", mensaje_codificado)
-print("Mensaje decodificado: ", mensaje_decodificado)
+if __name__ == "__main__":
 
+    mensaje = "SEPASA"
+    mensaje_codificado = codificar(mensaje, codigos_huffman)
+    mensaje_decodificado = decodificar(mensaje_codificado, arbol_huffman)
+
+    print("Mensaje original: ", mensaje)
+    print("Mensaje codificado: ", mensaje_codificado)
+    print("Mensaje decodificado: ", mensaje_decodificado)

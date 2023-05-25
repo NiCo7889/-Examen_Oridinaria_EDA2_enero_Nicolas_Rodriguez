@@ -14,76 +14,102 @@ exterminación en Cueva Lava.
 
 import random
 
-class Nodo:
-    def __init__(self, tipo, nivel, izq=None, der=None):
+class Pokemon:
+    def __init__(self, tipo, nivel):
         self.tipo = tipo
         self.nivel = nivel
-        self.izq = izq
-        self.der = der
+        self.vecinos = []
 
-# Definir los tipos de Pokémon
-tipos = ["Agua", "Fuego", "Tierra", "Electrico", "Normal", "Fantasma"]
+def generar_grafo_pokemon(n):
+    tipos = ["Agua", "Fuego", "Tierra", "Electrico", "Normal", "Fantasma"]
+    pokemon = [Pokemon(random.choice(tipos), random.randint(1, 1000)) for _ in range(n)]
+    grafo = {}
 
-# Generar los Pokémon
-pokemon = [Nodo(random.choice(tipos), random.randint(1, 1000)) for _ in range(800)]
+    for i in range(n):
+        grafo[i] = []
+        for j in range(n):
+            if i != j:
+                if pokemon[i].tipo != pokemon[j].tipo and abs(pokemon[i].nivel - pokemon[j].nivel) > 100:
+                    grafo[i].append(j)
+    
+    return pokemon, grafo
 
-# Crear las tablas hash
-hash_nivel = {i: None for i in range(1000)}
-hash_tipo = {t: None for t in tipos}
+def obtener_pokemon_por_nivel(pokemon, nivel):
+    return [p for p in pokemon if p.nivel % 100 == nivel]
 
-# Rellenar las tablas hash
-for p in pokemon:
-    nivel = p.nivel % 1000
-    if hash_nivel[nivel] is None:
-        hash_nivel[nivel] = p
-    else:
-        nodo_actual = hash_nivel[nivel]
-        while nodo_actual.der is not None:
-            nodo_actual = nodo_actual.der
-        nodo_actual.der = p
+def obtener_pokemon_por_tipo(pokemon, tipo):
+    return [p for p in pokemon if p.tipo == tipo]
 
-    tipo = p.tipo
-    if hash_tipo[tipo] is None:
-        hash_tipo[tipo] = p
-    else:
-        nodo_actual = hash_tipo[tipo]
-        while nodo_actual.der is not None:
-            nodo_actual = nodo_actual.der
-        nodo_actual.der = p
-
-# Encontrar y eliminar el Pokémon Fantasma de nivel 187
-nodo_actual = hash_nivel[187]
-if nodo_actual is not None and nodo_actual.tipo == "Fantasma":
-    hash_nivel[187] = nodo_actual.der
-else:
-    while nodo_actual is not None and nodo_actual.der is not None:
-        if nodo_actual.der.tipo == "Fantasma":
-            nodo_actual.der = nodo_actual.der.der
+def eliminar_pokemon_fantasma(pokemon, grafo, nivel):
+    for i in range(len(pokemon)):
+        if pokemon[i].tipo == "Fantasma" and pokemon[i].nivel % 1000 == nivel:
+            for vecino in grafo[i]:
+                grafo[vecino].remove(i)
+            del grafo[i]
+            del pokemon[i]
             break
-        nodo_actual = nodo_actual.der
 
-# Obtener los Pokémon para las misiones
-pokemon_asalto = []
-nodo_actual = hash_nivel[78]
-while nodo_actual is not None:
-    pokemon_asalto.append(nodo_actual)
-    nodo_actual = nodo_actual.der
+def obtener_pokemon_para_mision(pokemon, grafo, terminacion):
+    terminacion = terminacion % 100
+    indices = [i for i in range(len(pokemon)) if pokemon[i].nivel % 100 == terminacion]
+    return [pokemon[i] for i in indices if len(grafo[i]) == 0]
 
-pokemon_exploracion = []
-nodo_actual = hash_nivel[37]
-while nodo_actual is not None:
-    pokemon_exploracion.append(nodo_actual)
-    nodo_actual = nodo_actual.der
 
-# Obtener los Pokémon para las misiones del Profesor Oak
-pokemon_oak_exploracion = []
-nodo_actual = hash_tipo["Tierra"]
-while nodo_actual is not None:
-    pokemon_oak_exploracion.append(nodo_actual)
-    nodo_actual = nodo_actual.der
+if __name__ == "__main__":
 
-pokemon_oak_exterminacion = []
-nodo_actual = hash_tipo["Fuego"]
-while nodo_actual is not None:
-    pokemon_oak_exterminacion.append(nodo_actual)
-    nodo_actual = nodo_actual.der
+    # Generar los Pokémon y el grafo
+    n = 800
+    pokemon, grafo = generar_grafo_pokemon(n)
+
+    # Tabla hash para agrupar los Pokémon por los tres últimos dígitos del nivel
+    hash_nivel = {}
+    for i in range(n):
+        nivel = pokemon[i].nivel % 1000
+        if nivel not in hash_nivel:
+            hash_nivel[nivel] = []
+        hash_nivel[nivel].append(pokemon[i])
+
+    # Tabla hash para agrupar los Pokémon por tipo
+    hash_tipo = {}
+    for i in range(n):
+        tipo = pokemon[i].tipo
+        if tipo not in hash_tipo:
+            hash_tipo[tipo] = []
+        hash_tipo[tipo].append(pokemon[i])
+
+    # Eliminar el Pokémon Fantasma de nivel 187 si está presente
+    eliminar_pokemon_fantasma(pokemon, grafo, 187)
+
+    # Obtener los Pokémon para las misiones de asalto y exploración
+    pokemon_asalto = obtener_pokemon_para_mision(pokemon, grafo, 78)
+    pokemon_exploracion = obtener_pokemon_para_mision(pokemon, grafo, 37)
+
+    # Obtener los Pokémon de tipo Tierra para la misión de exploración al Bosque Verdanturf
+    pokemon_oak_exploracion = obtener_pokemon_por_tipo(pokemon, "Tierra")
+
+    # Obtener los Pokémon de tipo Fuego para la misión de exterminación en Cueva Lava
+    pokemon_oak_exterminacion = obtener_pokemon_por_tipo(pokemon, "Fuego")
+
+    # Imprimir los resultados
+    print("Pokémon para la misión de asalto:")
+    for p in pokemon_asalto:
+        print(p.tipo, p.nivel)
+
+    print("")
+
+    print("Pokémon para la misión de exploración:")
+    for p in pokemon_exploracion:
+        print(p.tipo, p.nivel)
+
+    print("")
+
+    print("Pokémon de tipo Tierra para la misión de exploración al Bosque Verdanturf:")
+    for p in pokemon_oak_exploracion:
+        print(p.tipo, p.nivel)
+
+    print("")
+
+    print("Pokémon de tipo Fuego para la misión de exterminación en Cueva Lava:")
+    for p in pokemon_oak_exterminacion:
+        print(p.tipo, p.nivel)
+

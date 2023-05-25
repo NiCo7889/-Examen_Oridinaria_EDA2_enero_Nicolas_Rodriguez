@@ -23,3 +23,66 @@ n-pokeballs / Soluciones distintas / Todas las soluciones / Una solución
 """
 
 
+def isSafe(board, row, col, n):
+    # Check this row on left side
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    # Check upper diagonal on left side
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    # Check lower diagonal on left side
+    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    return True
+
+def solveNQUtil(board, col, n):
+    # base case: If all Pokemon are placed
+    # then return true
+    if col >= n:
+        return True
+
+    # Consider this column and try placing
+    # this Pokemon in all rows one by one
+    for i in range(n):
+
+        if isSafe(board, i, col, n):
+            # Place this Pokemon in board[i][col]
+            board[i][col] = 1
+
+            # recur to place rest of the Pokemon
+            if solveNQUtil(board, col + 1, n):
+                return True
+
+            # If placing Pokemon in board[i][col
+            # doesn't lead to a solution, then
+            # remove queen from board[i][col]
+            board[i][col] = 0
+
+    # if the Pokemon can not be placed in any row in
+    # this colum col then return false
+    return False
+
+def solveNQ(n):
+    board = [[0 for _ in range(n)] for _ in range(n)]
+
+    if not solveNQUtil(board, 0, n):
+        print("Solution does not exist")
+        return False
+
+    printSolution(board)
+    return True
+
+def printSolution(board):
+    for i in range(len(board)):
+        for j in range(len(board)):
+            print(board[i][j], end=' ')
+        print()
+
+# test
+solveNQ(4)

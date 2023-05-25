@@ -33,6 +33,13 @@ K / Reunir los objetos más importantes para llevar en este viaje. / 15'
 L / Organizar los objetos. / 5'
 
 M / Viajar al aeropuerto y facturar. / 25'
+
+Ahora que tienes una lista de tareas y sus respectivas duraciones, necesitas decidir el camino más corto para completarlas todas. Considera cada tarea como un nodo y la 
+duración como el peso de la arista que conecta las tareas. Algunas tareas deben completarse antes que otras, lo que implica que los nodos no están todos conectados entre sí.
+
+Determinar la secuencia óptima de tareas. Recuerda que estos algoritmos son útiles para encontrar el árbol de expansión mínima en un grafo, lo que en este caso representaría
+la secuencia de tareas con el tiempo total mínimo.
+¿Cuál algoritmo elegirías en este caso y por qué? Desarrolla y describe el proceso que utilizarías para aplicar este algoritmo al conjunto de tareas.
 """
 
 

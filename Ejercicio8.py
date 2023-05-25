@@ -76,15 +76,29 @@ def decodificar(mensaje_codificado, nodo):
 
 # Ahora podemos usar estas funciones para construir el árbol de Huffman y codificar y decodificar mensajes
 frecuencias = {
-    'T': 0.15, 'O': 0.15, 'A': 0.12, 'E': 0.10, 'H': 0.09, 'S': 0.07, 'P': 0.07, 
-    'M': 0.07, 'N': 0.06, 'C': 0.06, 'D': 0.05, 'Z': 0.04, 'K': 0.03, ',': 0.03
+    'T': 0.15,
+    'O': 0.15,
+    'A': 0.12,
+    'E': 0.10,
+    'H': 0.09,
+    'S': 0.07,
+    'P': 0.07,
+    'M': 0.07,
+    'N': 0.06,
+    'C': 0.06,
+    'D': 0.05,
+    'Z': 0.04,
+    'K': 0.03,
+    ',': 0.03,
+    'B': 0.02,  # Añade la frecuencia para 'B'
+    'R': 0.02   # Añade la frecuencia para 'R'
 }
 
 nodos = [Nodo(s, f) for s, f in frecuencias.items()]
 arbol_huffman = construir_arbol_huffman(nodos)
 codigos_huffman = generar_codigos(arbol_huffman)
 
-mensaje = "TOBEORNOTTOBE"
+mensaje = "SEPASA"
 mensaje_codificado = codificar(mensaje, codigos_huffman)
 mensaje_decodificado = decodificar(mensaje_codificado, arbol_huffman)
 

@@ -23,6 +23,80 @@ n-pokeballs / Soluciones distintas / Todas las soluciones / Una solución
 """
 
 
+# def solve_n_pokeballs(n):
+#     def is_valid(board, row, col):
+#         # Verifica si es una posición válida para colocar un Pokémon
+#         for i in range(row):
+#             if board[i] == col or board[i] - i == col - row or board[i] + i == col + row:
+#                 return False
+#         return True
+
+#     def backtrack(board, row):
+#         # Caso base: cuando hemos ubicado todos los Pokémon
+#         if row == n:
+#             return [board]
+
+#         solutions = []
+#         for col in range(n):
+#             if is_valid(board, row, col):
+#                 board[row] = col
+#                 solutions.extend(backtrack(board, row + 1))
+#                 board[row] = -1  # Reiniciamos la posición
+
+#         return solutions
+
+#     # Inicializar el tablero con valores no válidos (-1)
+#     board = [-1] * n
+
+#     # Llamar a la función de backtracking para obtener todas las soluciones
+#     all_solutions = backtrack(board, 0)
+
+#     # Devolver la cantidad de soluciones distintas, todas las soluciones y una solución
+#     distinct_solutions = len(all_solutions)
+#     all_solutions = [[row + 1 for row in solution] for solution in all_solutions]
+#     one_solution = all_solutions[0] if distinct_solutions > 0 else []
+
+#     return distinct_solutions, all_solutions, one_solution
+# table = [
+#     (1, *solve_n_pokeballs(1)),
+#     (2, *solve_n_pokeballs(2)),
+#     (3, *solve_n_pokeballs(3)),
+#     (4, *solve_n_pokeballs(4)),
+#     (5, *solve_n_pokeballs(5)),
+#     (6, *solve_n_pokeballs(6)),
+#     (7, *solve_n_pokeballs(7)),
+#     (8, *solve_n_pokeballs(8)),
+#     (9, *solve_n_pokeballs(9)),
+#     (10, *solve_n_pokeballs(10)),
+#     (15, *solve_n_pokeballs(15))
+# ]
+
+# # Imprimir la tabla
+# print("n-pokeballs / Soluciones distintas / Todas las soluciones / Una solución")
+# for row in table:
+#     print(f"{row[0]} / {row[1]} / {row[2]} / {row[3]}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def isSafe(board, row, col, n):
     # Check this row on left side
     for i in range(col):
